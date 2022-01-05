@@ -2,6 +2,7 @@
 R22SDF FFT VLSI/FPGA investigate and implementation
 
 These synthesis # are based on ZYNQ 7020 FPGA
+
 These frabic can also applied onto Artix 7 series FPGA
 
 																									
