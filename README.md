@@ -1,6 +1,9 @@
 # FFT-R22SDF
 R22SDF FFT VLSI/FPGA investigate and implementation
 
+These synthesis # are based on ZYNQ 7020 FPGA
+These frabic can also applied onto Artix 7 series FPGA
+
 																									
 	Wo-FF		Point	16		Wo-FF		Point	64		Wo-FF		Point	256		Wo-FF		Point	1024		Wo-FF		Point	4096	
 	LUT	1262	53200	2.37		LUT	2370	53200	4.45		LUT	3611	53200	6.79		LUT	5459	53200	10.26		LUT	9567	53200	17.98	
