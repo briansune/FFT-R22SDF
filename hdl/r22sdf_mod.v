@@ -2,7 +2,7 @@
 // 	Engineer:				Brian Sune
 //	File:					r22sdf_mod.v
 //	Date (YYYY,MM,DD):		2022/1/1
-//	Aim:					R22SDF Module
+//	Aim:					Butterfly Type-I
 // ==================================================================
 
 
@@ -28,18 +28,7 @@ module r22sdf_mod#(
 	output	[data_resolution-1 : 0]		dout_i
 );
 	
-	// =========================================================
-	// LOG BASE 4
-	// =========================================================
-	function integer clog4;
-		input integer value;
-		begin  
-			value = value-1;
-			for (clog4=0; value>0; clog4=clog4+1)
-				value = value>>2;
-			end  
-	endfunction
-	// =========================================================
+	`include "logfunc.vh"
 	
 	localparam delay_tick		= clog4(fft_length) - 1 - mod_stage;
 	localparam delay_stage		= mod_stage;

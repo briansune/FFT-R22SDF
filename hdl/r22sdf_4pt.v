@@ -2,7 +2,7 @@
 // 	Engineer:				Brian Sune
 //	File:					r22sdf_4pt.v
 //	Date (YYYY,MM,DD):		2022/1/1
-//	Aim:					R22SDF 4PT Base
+//	Aim:					Butterfly Type-I
 // ==================================================================
 
 
@@ -26,18 +26,8 @@ module r22sdf_4pt#(
 	output	[data_resolution-1 : 0]		dout_r,
 	output	[data_resolution-1 : 0]		dout_i
 );
-	// =========================================================
-	// LOG BASE 2
-	// =========================================================
-	function integer clog2;
-		input integer value;
-		begin  
-			value = value-1;
-			for (clog2=0; value>0; clog2=clog2+1)
-				value = value>>1;
-			end  
-	endfunction
-	// =========================================================
+	
+	`include "logfunc.vh"
 	
 	localparam bf2i_delay = 4**(delay_stage)*2;
 	localparam bf2ii_delay = 4**(delay_stage);

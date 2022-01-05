@@ -28,6 +28,8 @@ module bf2i#(
 	output	[data_resolution-1 : 0]		dout_i
 );
 	
+	`include "logfunc.vh"
+	
 	reg		[data_resolution-1 : 0]		buff_r_d0;
 	reg		[data_resolution-1 : 0]		buff_r_d1;
 	
@@ -37,52 +39,120 @@ module bf2i#(
 	wire	[data_resolution-1 : 0]		din_r_w;
 	wire	[data_resolution-1 : 0]		din_i_w;
 	
-	reg		[data_resolution-1 : 0]		delay_r		[delay_num-1 : 0];
-	reg		[data_resolution-1 : 0]		delay_i		[delay_num-1 : 0];
-	
 	wire								sel_w;
+	
+	wire	[data_resolution-1 : 0]		delay_r_w;
+	wire	[data_resolution-1 : 0]		delay_i_w;
+	
+	genvar i;
+	
+	// --------------------------------------------------------------------------------
+	generate
+		
+		if(delay_num < 1024)begin : DELAY_FRABIC
+			reg		[data_resolution-1 : 0]		delay_r		[delay_num-1 : 0];
+			reg		[data_resolution-1 : 0]		delay_i		[delay_num-1 : 0];
+			
+			for(i=0;i<delay_num;i=i+1)begin
+				always@(posedge sys_clk or negedge sys_nrst)begin
+					if(!sys_nrst)begin
+						delay_r[i] <= 'd0;
+						delay_i[i] <= 'd0;
+					end else begin
+						if(sys_en)begin
+							if(i == 0)begin
+								delay_r[0] <= buff_r_d1;
+								delay_i[0] <= buff_i_d1;
+							end else begin
+								delay_r[i] <= delay_r[i-1];
+								delay_i[i] <= delay_i[i-1];
+							end
+						end
+					end
+				end
+			end
+			
+			assign delay_r_w = delay_r[delay_num-1];
+			assign delay_i_w = delay_i[delay_num-1];
+			
+		end else begin : DELAY_BRAM
+			
+			reg		[clog2(delay_num)-1 : 0]	delay_bram_tick_in;
+			reg		[clog2(delay_num)-1 : 0]	delay_bram_tick_out;
+			
+			always@(posedge sys_clk or negedge sys_nrst)begin
+				if(!sys_nrst)begin
+					delay_bram_tick_in <= -'d1;
+					delay_bram_tick_out <= 'd0;
+				end else begin
+					if(sys_en)begin
+						delay_bram_tick_in <= delay_bram_tick_in + 'd1;
+						delay_bram_tick_out <= delay_bram_tick_out + 'd1;
+					end
+				end
+			end
+			
+			xilinx_simple_dual_port_2_clock_ram #(
+				.RAM_WIDTH			(data_resolution),
+				.RAM_DEPTH			(delay_num),
+				.RAM_PERFORMANCE	("LOW_LATENCY"),
+				.INIT_FILE			("")
+			)delay_line_real(
+				.rstb	(!sys_nrst),
+				
+				.clka	(sys_clk),
+				.wea	(sys_en),
+				.addra	(delay_bram_tick_in),
+				.dina	(buff_r_d1),
+				
+				.clkb	(sys_clk),
+				.enb	(sys_en),
+				.regceb	(1'b1),
+				.addrb	(delay_bram_tick_out),
+				.doutb	(delay_r_w)
+			);
+			
+			xilinx_simple_dual_port_2_clock_ram #(
+				.RAM_WIDTH			(data_resolution),
+				.RAM_DEPTH			(delay_num),
+				.RAM_PERFORMANCE	("LOW_LATENCY"),
+				.INIT_FILE			("")
+			)delay_line_imag(
+				.rstb	(!sys_nrst),
+				
+				.clka	(sys_clk),
+				.wea	(sys_en),
+				.addra	(delay_bram_tick_in),
+				.dina	(buff_i_d1),
+				
+				.clkb	(sys_clk),
+				.enb	(sys_en),
+				.regceb	(1'b1),
+				.addrb	(delay_bram_tick_out),
+				.doutb	(delay_i_w)
+			);
+		end
+	endgenerate
+	// --------------------------------------------------------------------------------
 	
 	always@(*)begin
 		case(sel_w)
 			1'b0: begin
-				buff_r_d0 = $signed(delay_r[delay_num-1]);
-				buff_i_d0 = $signed(delay_i[delay_num-1]);
+				buff_r_d0 = $signed(delay_r_w);
+				buff_i_d0 = $signed(delay_i_w);
 				
 				buff_r_d1 = $signed(din_r_w);
 				buff_i_d1 = $signed(din_i_w);
 			end
 			1'b1: begin
-				buff_r_d1 = $signed(delay_r[delay_num-1]) - $signed(din_r_w);
-				buff_i_d1 = $signed(delay_i[delay_num-1]) - $signed(din_i_w);
+				buff_r_d1 = $signed(delay_r_w) - $signed(din_r_w);
+				buff_i_d1 = $signed(delay_i_w) - $signed(din_i_w);
 				
-				buff_r_d0 = $signed(delay_r[delay_num-1]) + $signed(din_r_w);
-				buff_i_d0 = $signed(delay_i[delay_num-1]) + $signed(din_i_w);
+				buff_r_d0 = $signed(delay_r_w) + $signed(din_r_w);
+				buff_i_d0 = $signed(delay_i_w) + $signed(din_i_w);
 			end
 		endcase
 	end
-	
-	genvar i;
-	
-	generate
-		for(i=0;i<delay_num;i=i+1)begin
-			always@(posedge sys_clk or negedge sys_nrst)begin
-				if(!sys_nrst)begin
-					delay_r[i] <= 'd0;
-					delay_i[i] <= 'd0;
-				end else begin
-					if(sys_en)begin
-						if(i==0)begin
-							delay_r[i] <= buff_r_d1;
-							delay_i[i] <= buff_i_d1;
-						end else begin
-							delay_r[i] <= delay_r[i-1];
-							delay_i[i] <= delay_i[i-1];
-						end
-					end
-				end
-			end
-		end
-	endgenerate
 	
 	generate
 		if(ff_in_en)begin : FF_IN_EN

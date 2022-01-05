@@ -2,7 +2,7 @@
 // 	Engineer:				Brian Sune
 //	File:					twiddle_mod.v
 //	Date (YYYY,MM,DD):		2022/1/1
-//	Aim:					Twiddle Module
+//	Aim:					Complex Multiplication
 // ==================================================================
 
 
@@ -22,31 +22,7 @@ module twiddle_mod#(
 	output							cordic_rdy
 );
 	
-	// =========================================================
-	// LOG BASE 2
-	// =========================================================
-	function integer clog2;
-		input integer value;
-		begin  
-			value = value-1;
-			for (clog2=0; value>0; clog2=clog2+1)
-				value = value>>1;
-			end  
-	endfunction
-	// =========================================================
-	
-	// =========================================================
-	// LOG BASE 4
-	// =========================================================
-	function integer clog4;
-		input integer value;
-		begin  
-			value = value-1;
-			for (clog4=0; value>0; clog4=clog4+1)
-				value = value>>2;
-			end  
-	endfunction
-	// =========================================================
+	`include "logfunc.vh"
 	
 	localparam phase_bw = 16;
 	localparam cordic_bw = clog2(division);
