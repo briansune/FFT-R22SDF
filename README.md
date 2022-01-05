@@ -10,12 +10,15 @@ R22SDF FFT VLSI/FPGA investigate and implementation
 |R2<sup>2</sup>SDF - Module | |
 |<img src="img/fft_r22sdf_mod.png" width="400">| |
 	
+# These synthesis # are based on ZYNQ 7020 FPGA
 
-These synthesis # are based on ZYNQ 7020 FPGA
+## These frabic utilization # can also applied onto Artix 7 series FPGA
 
-These frabic can also applied onto Artix 7 series FPGA
 
-																									
+<img src="https://user-images.githubusercontent.com/29487339/148173895-7f757f23-7ef8-4da7-a7cc-2ad7abfb0c3c.png" width="800"><img src="https://user-images.githubusercontent.com/29487339/148174033-eb10f1de-8993-44ae-92ba-ca2c9641523d.png" width="800">
+
+
+
 	Wo-FF		Point	16		Wo-FF		Point	64		Wo-FF		Point	256		Wo-FF		Point	1024		Wo-FF		Point	4096	
 	LUT	1262	53200	2.37		LUT	2370	53200	4.45		LUT	3611	53200	6.79		LUT	5459	53200	10.26		LUT	9567	53200	17.98	
 	LUTRAM	66	17400	0.38		LUTRAM	132	17400	0.76		LUTRAM	326	17400	1.87		LUTRAM	1112	17400	6.39		LUTRAM	4170	17400	23.97	
