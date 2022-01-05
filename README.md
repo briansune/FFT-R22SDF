@@ -1,6 +1,16 @@
 # FFT-R22SDF
 R22SDF FFT VLSI/FPGA investigate and implementation
 
+# Architecture
+
+
+|R2<sup>2</sup>SDF - BF2-Type I|R2<sup>2</sup>SDF - BF2-Type II|
+|:---:|:---:|
+|<img src="img/fft_r22sdf_bf2i.png" width="350">|<img src="img/fft_r22sdf_bf2ii.png" width="400">|
+|R2<sup>2</sup>SDF - Module | |
+|<img src="img/fft_r22sdf_mod.png" width="400">| |
+	
+
 These synthesis # are based on ZYNQ 7020 FPGA
 
 These frabic can also applied onto Artix 7 series FPGA
