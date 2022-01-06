@@ -9,9 +9,11 @@
 `timescale 1 ns/ 1 ps
 
 module twiddle_mod#(
-	parameter division = 16,
-	parameter fft_length = 16,
-	parameter ff_in_en = 0
+	parameter division		= 16,
+	parameter fft_length	= 16,
+	parameter ff_in_en		= 0,
+	parameter ff_out_en		= 0,
+	parameter dsp_ff_num	= 0
 )(
 	input							sys_clk,
 	input							sys_nrst,
@@ -30,8 +32,14 @@ module twiddle_mod#(
 	
 	localparam pwr_cmp = clog4(fft_length) - clog4(division);
 	localparam offset = (pwr_cmp > 0) ? 1 : 0;
-	localparam cordic_rdy_cnt = 17 + (fft_length / 4) - ff_in_en * (2 * (pwr_cmp + 1));
-	localparam cordic_init_cnt = (division / 4) * offset - ff_in_en * (2 * (pwr_cmp + 1));
+	
+	localparam tick_ff_path_dsp = (dsp_ff_num > 0) ? pwr_cmp * dsp_ff_num : 0;
+	localparam tick_ff_path_num = (ff_in_en + ff_out_en) * 2;
+	
+	localparam cordic_offset = (tick_ff_path_num) * (pwr_cmp + 1) + tick_ff_path_dsp;
+	
+	localparam cordic_rdy_cnt = 17 + (fft_length / 4) - cordic_offset;
+	localparam cordic_init_cnt = (division / 4) * offset - cordic_offset;
 	
 	reg							cordic_rdy_r;
 	reg		[tick_bw : 0]		cordic_init;
@@ -67,13 +75,17 @@ module twiddle_mod#(
 	always@(posedge sys_clk or negedge sys_nrst)begin
 		if(!sys_nrst)begin
 			cordic_init <= cordic_init_cnt;
+		end else if(sys_en)begin
+			cordic_init <= cordic_init + 'd1;
+		end
+	end
+	
+	always@(posedge sys_clk)begin
+		if(!sys_nrst)begin
 			cordic_rdy_r <= 1'b0;
-		end else begin
-			if(sys_en)begin
-				cordic_init <= cordic_init + 'd1;
-				if(cordic_init == cordic_rdy_cnt)begin
-					cordic_rdy_r <= 1'b1;
-				end
+		end else if(sys_en)begin
+			if(cordic_init == cordic_rdy_cnt)begin
+				cordic_rdy_r <= 1'b1;
 			end
 		end
 	end

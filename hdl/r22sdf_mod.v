@@ -12,7 +12,9 @@ module r22sdf_mod#(
 	parameter data_resolution	= 16,
 	parameter fft_length		= 4,
 	parameter mod_stage			= 0,
-	parameter ff_in_en			= 0
+	parameter ff_in_en			= 0,
+	parameter ff_out_en			= 0,
+	parameter dsp_ff_num		= 0
 )(
 	input								sys_clk,
 	input								sys_nrst,
@@ -41,7 +43,9 @@ module r22sdf_mod#(
 		.data_resolution	(data_resolution),
 		.delay_tick			(delay_tick),
 		.delay_stage		(mod_stage),
-		.ff_in_en			(ff_in_en)
+		.ff_in_en			(ff_in_en),
+		.ff_out_en			(ff_out_en),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_4pt_inst0(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -64,7 +68,9 @@ module r22sdf_mod#(
 			twiddle_mod#(
 				.division			(division),
 				.fft_length			(fft_length),
-				.ff_in_en			(ff_in_en)
+				.ff_in_en			(ff_in_en),
+				.ff_out_en			(ff_out_en),
+				.dsp_ff_num			(dsp_ff_num)
 			)twiddle_mod_inst0(
 				.sys_clk			(sys_clk),
 				.sys_nrst			(sys_nrst),
@@ -75,8 +81,13 @@ module r22sdf_mod#(
 			);
 			
 			mult_r22sdf#(
-				.data_resolution	(data_resolution)
+				.data_resolution	(data_resolution),
+				.pipeline_num		(dsp_ff_num)
 			)mult_r22sdf_inst0(
+				.sys_clk			(sys_clk),
+				.sys_nrst			(sys_nrst),
+				.sys_en				(sys_en),
+				
 				.din_r				(dout_r_w),
 				.din_i				(dout_i_w),
 				.tw_fac_r			(tw_fac_r),

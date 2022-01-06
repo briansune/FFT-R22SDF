@@ -9,9 +9,11 @@
 `timescale 1 ns/ 1 ps
 
 module r22sdf_65536pt#(
-	parameter data_resolution = 16,
-	parameter fft_length = 65536,
-	parameter intermediate_ff = 0
+	parameter data_resolution	= 16,
+	parameter fft_length		= 65536,
+	parameter inter_input_ff	= 1,
+	parameter inter_output_ff	= 1,
+	parameter dsp_ff_num		= 3
 )(
 	
 	input								sys_clk,
@@ -53,10 +55,12 @@ module r22sdf_65536pt#(
 	assign sys_en_glb = sys_en & cordic_rdy[7];
 	
 	r22sdf_mod#(
+		.mod_stage			(7),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(7),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s7(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -72,10 +76,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(6),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(6),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s6(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -91,10 +97,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(5),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(5),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s5(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -110,10 +118,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(4),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(4),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s4(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -129,10 +139,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(3),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(3),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s3(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -148,10 +160,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(2),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(2),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s2(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -167,10 +181,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(1),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(1),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s1(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),
@@ -186,10 +202,12 @@ module r22sdf_65536pt#(
 	);
 	
 	r22sdf_mod#(
+		.mod_stage			(0),
 		.data_resolution	(data_resolution),
 		.fft_length			(fft_length),
-		.mod_stage			(0),
-		.ff_in_en			(intermediate_ff)
+		.ff_in_en			(inter_input_ff),
+		.ff_out_en			(inter_output_ff),
+		.dsp_ff_num			(dsp_ff_num)
 	)r22sdf_mod_s0(
 		.sys_clk			(sys_clk),
 		.sys_nrst			(sys_nrst),

@@ -49,7 +49,7 @@ module bf2ii#(
 	// --------------------------------------------------------------------------------
 	generate
 		
-		if(delay_num < 1024)begin : DELAY_FRABIC
+		if(delay_num < 4096)begin : DELAY_FRABIC
 			reg		[data_resolution-1 : 0]		delay_r		[delay_num-1 : 0];
 			reg		[data_resolution-1 : 0]		delay_i		[delay_num-1 : 0];
 			
@@ -80,13 +80,20 @@ module bf2ii#(
 			reg		[clog2(delay_num)-1 : 0]	delay_bram_tick_in;
 			reg		[clog2(delay_num)-1 : 0]	delay_bram_tick_out;
 			
-			always@(posedge sys_clk or negedge sys_nrst)begin
+			always@(posedge sys_clk)begin
 				if(!sys_nrst)begin
-					delay_bram_tick_in <= -'d1;
-					delay_bram_tick_out <= 'd0;
-				end else begin
-					if(sys_en)begin
+					delay_bram_tick_in <= 'd0;
+					delay_bram_tick_out <= 'd1;
+				end else if(sys_en)begin
+					if(delay_bram_tick_in == (delay_num - 2))begin
+						delay_bram_tick_in <= 'd0;
+					end else begin
 						delay_bram_tick_in <= delay_bram_tick_in + 'd1;
+					end
+					
+					if(delay_bram_tick_out == (delay_num - 2))begin
+						delay_bram_tick_out <= 'd0;
+					end else begin
 						delay_bram_tick_out <= delay_bram_tick_out + 'd1;
 					end
 				end
@@ -94,8 +101,8 @@ module bf2ii#(
 			
 			xilinx_simple_dual_port_2_clock_ram #(
 				.RAM_WIDTH			(data_resolution),
-				.RAM_DEPTH			(delay_num),
-				.RAM_PERFORMANCE	("LOW_LATENCY"),
+				.RAM_DEPTH			(delay_num - 1),
+				.RAM_PERFORMANCE	("HIGH_PERFORMANCE"),
 				.INIT_FILE			("")
 			)delay_line_real(
 				.rstb	(!sys_nrst),
@@ -114,8 +121,8 @@ module bf2ii#(
 			
 			xilinx_simple_dual_port_2_clock_ram #(
 				.RAM_WIDTH			(data_resolution),
-				.RAM_DEPTH			(delay_num),
-				.RAM_PERFORMANCE	("LOW_LATENCY"),
+				.RAM_DEPTH			(delay_num - 1),
+				.RAM_PERFORMANCE	("HIGH_PERFORMANCE"),
 				.INIT_FILE			("")
 			)delay_line_imag(
 				.rstb	(!sys_nrst),
