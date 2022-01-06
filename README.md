@@ -10,14 +10,14 @@ R22SDF FFT VLSI/FPGA investigate and implementation
 |R2<sup>2</sup>SDF - Module | |
 |<img src="img/fft_r22sdf_mod.png" width="400">| |
 	
-# These synthesis # are based on ZYNQ 7020 FPGA
+# These synthesis # are based on ZYNQ XC7Z020-1CLG400 FPGA
 
 ## These frabic utilization # can also applied onto Artix 7 series FPGA
 
 
 <img src="https://user-images.githubusercontent.com/29487339/148173895-7f757f23-7ef8-4da7-a7cc-2ad7abfb0c3c.png" width="800"><img src="https://user-images.githubusercontent.com/29487339/148174033-eb10f1de-8993-44ae-92ba-ca2c9641523d.png" width="800">
 
-
+# Xilinx FPGA Artix / Zynq PL Frabic Synthesis Data
 										
 	Wo-FF			16		Wo-FF			64	
 	LUT	1262	53200	2.37		LUT	2370	53200	4.45	
@@ -50,7 +50,7 @@ R22SDF FFT VLSI/FPGA investigate and implementation
 	DSP	20	220	9.09		DSP	20	220	9.09	
 						BRAM	3	140	2.14	
 										
-	W-FF			4096		W-FF			4096	
+	W-FF			4096		W-FF+BRAM Delay		4096	
 	LUT	9591	53200	18.03		LUT	6584	53200	12.38	
 	LUTRAM	4170	17400	23.97		LUTRAM	1114	17400	6.40	
 	FF	7335	106400	6.89		FF	5311	106400	4.99	
@@ -64,7 +64,7 @@ R22SDF FFT VLSI/FPGA investigate and implementation
 	DSP	24	220	10.91		DSP	24	220	10.91	
 						BRAM	15	140	10.71	
 										
-	W-FF			16384		W-FF			16384	
+	W-FF			16384		W-FF+BRAM Delay		16384	
 	LUT	22951	53200	43.14		LUT	7661	53200	14.40	
 	LUTRAM	16460	17400	94.60		LUTRAM	1116	17400	6.41	
 	FF	14577	106400	13.70		FF	6261	106400	5.88	
